@@ -58,38 +58,57 @@ WAVE_OUTPUT_FILENAME1= "2019-06-24_16-48-18.wav"
 filename = WAVE_OUTPUT_FILENAME
 samplerate, audio = read(filename)
 
-#import matplotlib.pylab as plt
+
+filename1 = WAVE_OUTPUT_FILENAME1
+samplerate1, audio1 = read(filename1)
+import matplotlib.pylab as plt
 #plt.plot(audio)
 #plt.show()
 #print(len(audio))
 
 from scipy import signal
-plt.rcParams['figure.figsize'] = 16,4
+#plt.rcParams['figure.figsize'] = 16,4
 
 segment_length = samplerate//5
 frequency_res = samplerate/segment_length
 freq_limit = 1000 #in Hz
 index_limit = int(freq_limit//frequency_res)
-print(frequency_res, index_limit)
+
+
+segment_length1 = samplerate1//5
+frequency_res1 = samplerate1/segment_length1
+freq_limit1 = 1000 #in Hz
+index_limit1 = int(freq_limit1//frequency_res1)
+
+#print(frequency_res, index_limit)
+
+
 segment_overlap = samplerate//10
-print(segment_length, segment_overlap)
+
+segment_overlap1 = samplerate1//10
+#print(segment_length, segment_overlap)
 
 f, t, S = signal.spectrogram(audio, samplerate, window='flattop', nperseg=segment_length, noverlap=segment_overlap, scaling='spectrum', mode='magnitude')
 
-print('Data length (s): ', t[-1])
-print('Sampling frequency (samples/s): ', samplerate)
-plt.pcolormesh(t, f[:index_limit], S[:index_limit][:])
-plt.xlabel('time(s)')
-plt.ylabel('frequency(Hz)')
-plt.show()
+f1, t1, S1 = signal.spectrogram(audio1, samplerate1, window='flattop', nperseg=segment_length1, noverlap=segment_overlap1, scaling='spectrum', mode='magnitude')
+#print('Data length (s): ', t[-1])
+#print('Sampling frequency (samples/s): ', samplerate)
+#plt.pcolormesh(t, f[:index_limit], S[:index_limit][:])
+#plt.xlabel('time(s)')
+#plt.ylabel('frequency(Hz)')
+#plt.show()
 
 specgram = S[:index_limit][:]
+
+specgram1 = S1[:index_limit1][:]
 
 from scipy.ndimage.filters import maximum_filter
 from scipy.ndimage.morphology import (generate_binary_structure,
                                       iterate_structure, binary_erosion)
 threshold = 70.0    # Minimum amplitude in spectrogram in order to be considered a peak.
 PEAK_NEIGHBORHOOD_SIZE = 2  # Number of cells around an amplitude peak in the spectrogram in order to be considered a spectral peak.
+
+
 
 def get_2D_peaks(arr2d, amp_min=threshold):
     # http://docs.scipy.org/doc/scipy/reference/generated/scipy.ndimage.morphology.iterate_structure.html#scipy.ndimage.morphology.iterate_structure
@@ -129,10 +148,13 @@ def get_2D_peaks(arr2d, amp_min=threshold):
 local_maxima, bin_spec = get_2D_peaks(specgram, amp_min=threshold)
 local_max_list = list(local_maxima)
 
-plt.pcolormesh(bin_spec)
-plt.xlabel('time(s)')
-plt.ylabel('frequency(Hz)')
-plt.show()
+local_maxima1, bin_spec1 = get_2D_peaks(specgram1, amp_min=threshold)
+local_max_list1 = list(local_maxima1)
+
+#plt.pcolormesh(bin_spec)
+#plt.xlabel('time(s)')
+#plt.ylabel('frequency(Hz)')
+#plt.show()
 
 import hashlib
 from operator import itemgetter
@@ -176,14 +198,15 @@ hashes = generate_hashes(peaks=local_max_list, fan_value=5)
 hash_list = list(hashes)
 #hash_dict = dict(hashes)
 #hash_set = set(hashes)
-len(hash_list)
 
+hashes1 = generate_hashes(peaks=local_max_list1, fan_value=5)
+hash_list1 = list(hashes1)
 
 
 
 
 teste1 =hash_list
-teste =hash_list
+teste =hash_list1
 tamanho=len(teste)
 a=0
 for i in range(tamanho):
