@@ -7,3 +7,7 @@ Created on Mon Jun 24 15:47:45 2019
 
 ###processamento de sinal digital
 
+import pyaudio
+import numpy as np
+import wave
+import datetime
